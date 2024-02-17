@@ -4,10 +4,20 @@ Config.UseTarget = GetConvar('UseTarget', 'false') == 'true' -- Use qb-target in
 Config.VTC = {
     general = {
         speed_unit = "MPH",                 --can be KPH or MPH (this will affect min/max speed constraint)
+        job_required = "uverx_driver",      --The needed job for being a VTC driver (nil means no job)
+        item_required = "uverx_license",    --The needed item for being a VTC driver (nil means no item)
     },
     course = {
         availability_time_npc = 10000,      --Number of milliseconds after a NPC Course will be remove from list
         availability_time_player = 20000,   --Number of milliseconds after a Player Course will be remove from list
+        malus_interval = 100,               --Calculation ticks for malus (milliseconds)
+        malus = {
+            to_fast=0.05,    --Malus for overspeeding
+            to_slow=0.05,    --Malus for underspeeding
+            away=0.1,        --Malus when driver is out from the car
+            damage=2.0,      --Malus during car damage
+            music=0.1,       --Malus for wrong music needs
+        }
     },
     generator = {
         min_wait_time = 3000,               --Min time before the next NPC course generation

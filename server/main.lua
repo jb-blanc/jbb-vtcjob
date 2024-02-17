@@ -225,21 +225,50 @@ local function endCourse(src, player, cid, success, satisfaction)
     end
 end
 
+local function canPlayerGoOnDuty(player)
+    if not player then return false end
+    local wrongs = {}
+    if Config.VTC.general.job_required then 
+        if player.PlayerData.job.name ~= Config.VTC.general.job_required then
+            wrongs[#(wrongs)+1] = "the job "..QBCore.Shared.Jobs[Config.VTC.general.job_required].label
+        end
+    end
+    if Config.VTC.general.item_required then 
+        if not QBCore.Functions.HasItem(player.PlayerData.source, Config.VTC.general.item_required, 1) then
+            wrongs[#(wrongs)+1] = "the item "..QBCore.Shared.Items[Config.VTC.general.item_required].label
+        end
+    end
+    return (#wrongs == 0), wrongs
+end
+
 local function goOnDuty(source)
     local src = source
     local player = checkAndGetPlayer(src)
-    if player then
-        local vehicle = GetVehiclePedIsIn(GetPlayerPed(src), false)
-        if not vehicle then
-            QBCore.Functions.Notify(src, "You must be in a vehicle to start UverX.", "error", 3000)
-            return
+    if not player then return false end
+
+    local meetRequirements, wrongs = canPlayerGoOnDuty(player)
+    if not meetRequirements and wrongs then
+        local strWrongs = ""
+        for idx,wrong in ipairs(wrongs) do
+            if idx > 1 then strWrongs = strWrongs.." and" end
+            strWrongs = strWrongs.."  "..wrong
         end
 
-        dbRetrievePlayer(player)
-        activeDriver[player.PlayerData.citizenid] = src
-        QBCore.Functions.Notify(src, "You're on duty.", "success", 2000)
-        TriggerClientEvent("jbb:vtc:client:onduty", src, dbCache[player.PlayerData.citizenid].rate)
+        QBCore.Functions.Notify(src, "To go on duty you need "..strWrongs, "error", 5000)
+        return false
     end
+
+    local vehicle = GetVehiclePedIsIn(GetPlayerPed(src), false)
+    if not vehicle then
+        QBCore.Functions.Notify(src, "You must be in a vehicle to start UverX.", "error", 3000)
+        return false
+    end
+
+    dbRetrievePlayer(player)
+    activeDriver[player.PlayerData.citizenid] = src
+    QBCore.Functions.Notify(src, "You're on duty.", "success", 2000)
+    TriggerClientEvent("jbb:vtc:client:onduty", src, dbCache[player.PlayerData.citizenid].rate)
+    return true
 end
 
 local function goOffDuty(source)
@@ -326,16 +355,19 @@ RegisterNetEvent('jbb:vtc:server:driveratdestination', function(courseId)
     TriggerClientEvent("jbb:vtc:client:driverarrived", inProgressCourse[cid].player)
 end)
 
-RegisterNetEvent('jbb:vtc:server:changeDuty', function(data)
+QBCore.Functions.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb, data)
     local src = source
-    if not src then return end
+    if not src then cb(false) return end
     local player = checkAndGetPlayer(src)
-    if not player then return end
+    if not player then cb(false) return end
     if data.driverMode then
-        goOnDuty(src)
+        local duty = goOnDuty(src)
+        cb(duty)
     else
         goOffDuty(src)
+        cb(true)
     end
+    
 end)
 
 local running = true

@@ -18,6 +18,7 @@ const elAskDriverButtons = document.getElementById('jbb-vtc-askdriver-btns')
 const elClientInfos = document.getElementById('jbb-vtc-client-infos')
 const elClientMugshot = document.getElementById('jbb-vtc-client-mugshot')
 const elClientDetailsTxt = document.getElementById('jbb-client-details-txt')
+const elInputSwitchMode = document.getElementById('jbb-vtc-switchMode-input')
 
 const driverStatus = {coming:"Your driver is on his way", here:"Your driver is here", inprogress:"Ride is in progress", finished:"You have arrived"}
 var askcourse = null
@@ -251,13 +252,19 @@ function switchToClientMode(){
 }
 
 function changeMode(){
-    if(driverMode==true){
-        switchToClientMode();
-    }
-    else{
-        switchToDriverMode();
-    }
-    sendEvent("jbb:vtc:client:ui:changedMode", {driverMode: driverMode})
+    sendEvent("jbb:vtc:client:ui:changedMode", {driverMode: !driverMode}, function(data){
+        if(data.success == true){
+            if(driverMode==true){
+                switchToClientMode();
+            }
+            else{
+                switchToDriverMode();
+            }
+        }
+        else{
+            elInputSwitchMode.checked = driverMode
+        }
+    })
 }
 
 function displayMugshot(txdString, infos){

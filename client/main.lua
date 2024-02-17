@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+QBCore = exports['qb-core']:GetCoreObject()
 
 local courses = {}
 local myRate = 0.0
@@ -223,23 +223,23 @@ local function startSatisfactionThread()
             local musicOk = isClientOkOnMusic(GetPlayerRadioStationName(),GetPlayerRadioStationIndex())
 
             if toFast then
-                currentCourse.satisfaction = currentCourse.satisfaction - 0.05
+                currentCourse.satisfaction = currentCourse.satisfaction - Config.VTC.course.malus.to_fast
                 playSound("GENERIC_FRIGHTENED_HIGH")
             end
             if toSlow then
-                currentCourse.satisfaction = currentCourse.satisfaction - 0.05
+                currentCourse.satisfaction = currentCourse.satisfaction - Config.VTC.course.malus.to_slow
                 playSound("GENERIC_INSULT_HIGH")
             end
             if hasMadeDamage then 
-                currentCourse.satisfaction = currentCourse.satisfaction - 2.0
+                currentCourse.satisfaction = currentCourse.satisfaction - Config.VTC.course.malus.damage
                 playSound("GENERIC_SHOCKED_HIGH")
             end
             if not isPlayerInVehicle then 
-                currentCourse.satisfaction = currentCourse.satisfaction - 0.1
+                currentCourse.satisfaction = currentCourse.satisfaction - Config.VTC.course.malus.away
                 playSound("GENERIC_INSULT_HIGH")
             end
             if not musicOk then
-                currentCourse.satisfaction = currentCourse.satisfaction - 0.1
+                currentCourse.satisfaction = currentCourse.satisfaction - Config.VTC.course.malus.music
                 playSound("GENERIC_SHOCKED_MED")
             end
 
@@ -247,7 +247,7 @@ local function startSatisfactionThread()
             
             VtcUiUpdateSatisfaction(currentCourse.satisfaction)
 
-            Wait(100)
+            Wait(Config.VTC.course.malus_interval)
         end
     end)
 end
