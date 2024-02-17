@@ -1,0 +1,116 @@
+#jbb-vtc-dashboard {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 0px 10px 10px 10px;
+    margin:10px;
+    width: 320px;
+    max-height: 600px;
+    color:white;
+    font-size:0.7em;
+    position: absolute;
+    right: 20px;
+    bottom: 100px;
+}
+
+#jbb-vtc-client-infos {
+    opacity: 0.8;
+    border-radius: 10px;
+    width: 400px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.jbb-vtc-infos-top{
+    display: flex;
+}
+
+#jbb-vtc-client-mugshot{
+    border-radius: 10px 0 0 0;
+    width: 100px;
+}
+.jbb-client-details{
+    padding: 0 10px;
+}
+.jbb-client-infos-bottom-btn{
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+}
+
+#jbb-vtc-dashboard-courses {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 400px;
+    padding-right: 5px;
+}
+
+#jbb-vtc-dashboard-current {
+    overflow: hidden;
+    max-height: 400px;
+    padding-right: 5px;
+    margin:10px;
+    width: 320px;
+    max-height: 600px;
+    color:black;
+    font-size:0.7em;
+    position: absolute;
+    right: 20px;
+    bottom: 100px;
+    opacity: 0.8;
+}
+
+#jbb-vtc-rate {
+    font-size: 1.5em;
+}
+
+#jbb-vtc-dashboard-courses::-webkit-scrollbar {
+    width: 2px;
+    border-radius: 2px;
+}
+ 
+#jbb-vtc-dashboard-courses::-webkit-scrollbar-track {
+    -webkit-box-shadow: none;
+}
+ 
+#jbb-vtc-dashboard-courses::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
+.jbb-vtc-course-small {
+    border-radius: 5px;
+    padding: 2px;
+    color:black;
+}
+
+.row.smallmargin {
+    margin-bottom:2px;
+}
+
+.jbb-vtc-loader-item{
+    width: 100%;
+}
+
+.jbb-vtc-askdriver-loader{
+    height:10px; 
+    margin:0;
+}
+
+.btn-row {
+    padding-bottom: 10px;
+}
+
+@keyframes blinking {
+    0% {
+        background-color:  rgba(0, 0, 0, 0.8)
+    }
+    50% {
+        background-color:  rgba(33, 163, 0, 1)
+    }
+    100% {
+        background-color:  rgba(0, 0, 0, 0.8)
+    }
+}
+.blink {
+    animation: blinking 1s infinite;
+}

@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/jbb-vtc.css"  media="screen,projection"/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body>
+        <div id="jbb-vtc-client-infos" class="green darken-4 white-text hide">
+            <div class="jbb-vtc-infos-top">
+                <img id="jbb-vtc-client-mugshot" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLLSo3u3uBOXqgqArNPqYtf81kT5wffHLLpg&usqp=CAU">
+                <div class="jbb-client-details">
+                    <p id="jbb-client-details-txt">
+                        Loves rock music<br/>
+                        Affraid in car so do not drive over 80 MPH
+                    </p>
+                </div>
+            </div>
+            <div class="jbb-client-infos-bottom align-center">
+                <a class="jbb-client-infos-bottom-btn btn waves-effect waves-light green" onclick="hideClientInfos()">Close</a>
+            </div>
+        </div>
+        <div id="jbb-vtc-dashboard" class="hide">
+            <div class="row smallmargin">
+                <div class="valign-wrapper">
+                    <div class="col s2">
+                        <div class="valign-wrapper center-align">
+                            <i class="material-icons small">stars</i><span id="jbb-vtc-rate">1.5</span>
+                        </div>
+                    </div>
+                    <div class="col s8">
+                        <h5 class="center-align">UverX</h5>
+                    </div>
+                    <div class="col s2">
+                        <div>
+                            <a class="btn-floating btn-small waves-effect waves-light red" onclick="hide()"><i class="material-icons">visibility_off</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+            </div>
+            <div id="jbb-vtc-dashboard-courses" class="hide">
+                
+            </div>
+            <div class="row smallmargin">
+                <div id="jbb-vtc-askdriver">
+                    <div class="row smallmargin valign-wrapper">
+                        <div class="col s10">
+                            <h6 class="center-align">Ask for a ride</h6>
+                        </div>
+                        <div class="col s2">
+                            <div>
+                                <a class="btn-floating btn-small waves-effect waves-light primary" onclick="askForDriver()"><i class="material-icons">location_on</i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="jbb-vtc-askdriver-form" class="blue-grey darken-1 hide">
+                    <div class="row smallmargin">
+                        <div class="col s12">                          
+                            <form action="#">
+                                <p class="range-field">
+                                    <label for="passengers" style="color:white;">Passenger</label>
+                                    <input type="range" id="jbb-vtc-askdriver-passengers" name="passengers" min="1" max="5" value="1"/>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row smallmargin">
+                        <div class="col s3">
+                            <p class="left-align">Location :<br/>Distance :<br/>Price :</p>
+                        </div>
+                        <div class="col s9">
+                            <p class="left-align">
+                                <span id="jbb-vtc-askdriver-location">Central avenue</span><br/>
+                                <span id="jbb-vtc-askdriver-distance">1.4 km</span><br/>
+                                <span id="jbb-vtc-askdriver-price">250</span>$
+                            </p>
+                        </div>
+                    </div>
+                    <div id="jbb-vtc-askdriver-btns" class="row btn-row">
+                        <div class="col s6">
+                            <a class="waves-effect waves-light btn green" onclick="validateAsk()"><i class="material-icons left">check</i>Accept</a>
+                        </div>
+                        <div class="col s6">
+                            <a class="waves-effect waves-light btn red" onclick="cancelAsk()"><i class="material-icons left">clear</i>Cancel</a>
+                        </div>
+                    </div>
+                    <div id="jbb-vtc-askdriver-waiting" class="row smallmargin hide">
+                        <div class="progress jbb-vtc-askdriver-loader">
+                            <div class="indeterminate"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="jbb-vtc-askdriver-coming" class="hide">
+                    <div class="row smallmargin valign-wrapper">
+                        <div class="col s12">
+                            <h6 class="center-align" id="jbb-vtc-askdriver-status">Your driver is on his way</h6>
+                        </div>
+                    </div>
+                    <div class="row smallmargin valign-wrapper">
+                        <div class="col s12">
+                            <h6 class="center-align">Driver : <span id="jbb-vtc-askdriver-drivername">Michel</span></h6>
+                            <h6 class="center-align">Plate : <span id="jbb-vtc-askdriver-driverplate">PM2XSRK</span></h6>
+                        </div>
+                    </div>
+                </div>
+                <div id="jbb-vtc-switchMode">
+                    <div class="row smallmargin valign-wrapper">
+                        <div class="col s10">
+                            <h6 class="center-align">Driver mode</h6>
+                        </div>
+                        <div class="col s2">
+                            <div class="switch">
+                                <label>
+                                    <input type="checkbox" value="false" onchange="changeMode()">
+                                    <span class="lever" style="margin:0;"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="jbb-vtc-dashboard-current"  class="hide">
+            <div id="jbb-vtc-current" class="jbb-vtc-course-small card scale-transition scale-in">
+                <div class="row smallmargin">
+                    <div class="valign-wrapper">
+                        <div class="col s2">
+                            <div class="valign-wrapper center-align">
+                                <i class="material-icons small">stars</i><span id="jbb-vtc-cur-rate">1.5</span>
+                            </div>
+                        </div>
+                        <div class="col s8">
+                            <h5 class="center-align">My Course</h5>
+                        </div>
+                        <div class="col s2">
+                            <div>
+                                <a class="btn-floating btn-small waves-effect waves-light red" onclick="cancelCourse()"><i class="material-icons">remove_circle_outline</i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row smallmargin">
+                    <div class="col s2"><i class="material-icons tiny">people</i></div>
+                    <div id="jbb-vtc-cur-pcount" class="col s2">3</div>
+                    <div class="col s2"><i class="material-icons tiny">monetization_on</i></div>
+                    <div id="jbb-vtc-cur-reward" class="col s2">10</div>
+                    <div class="col s2"><i class="material-icons tiny">flag</i></div>
+                    <div class="col s2"><span id="jbb-vtc-cur-distance">10.5</span>km</div>
+                </div>
+                <div class="row smallmargin">
+                    <div class="col s12 center-align">
+                        <div class="row smallmargin">
+                            <div class="col s1 center-align"><i class="material-icons tiny">location_on</i></div>
+                            <div class="col s10 left-align"><span id="jbb-vtc-cur-pickup">Pickup road</span> (<span id="jbb-vtc-cur-pickup-distance">1.2</span>km away)</div>
+                        </div>
+                        <div class="row smallmargin">
+                            <div class="col s1 center-align"><i class="material-icons tiny">flag</i></div>
+                            <div id="jbb-vtc-cur-destination" class="col s10 left-align">Destination road</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row smallmargin">
+                    <div class="col s2 center-align"><i id="jbb-vtc-cur-satisfaction-icon" class="material-icons small">sentiment_very_satisfied</i></div>
+                    <div class="col s10 center-align">
+                        <div class="progress" style="height:10px;">
+                            <div id="jbb-vtc-cur-satisfaction" class="determinate green" style="width:100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <template id="jbb-vct-course-tpl">
+            <div class="jbb-vtc-course-small card scale-transition scale-in" id="">
+                <div class="row smallmargin">
+                    <div class="col s2"><i class="material-icons tiny">people</i></div>
+                    <div id="jbb-vtc-pcount" class="col s2">3</div>
+                    <div class="col s2"><i class="material-icons tiny">monetization_on</i></div>
+                    <div id="jbb-vtc-reward" class="col s2">10</div>
+                    <div class="col s2"><i class="material-icons tiny">flag</i></div>
+                    <div class="col s2"><span id="jbb-vtc-distance">10.5</span>km</div>
+                </div>
+                <div class="row smallmargin">
+                    <div class="col s10 center-align">
+                        <div class="row smallmargin">
+                            <div class="col s1 center-align"><i class="material-icons tiny">location_on</i></div>
+                            <div class="col s10 left-align"><span id="jbb-vtc-pickup">Pickup road</span> (<span id="jbb-vtc-pickup-distance">1.2</span>km away)</div>
+                        </div>
+                        <div class="row smallmargin">
+                            <div class="col s1 center-align"><i class="material-icons tiny">flag</i></div>
+                            <div id="jbb-vtc-destination" class="col s10 left-align">Destination road</div>
+                        </div>
+                    </div>
+                    <div class="col s2">
+                        <div class="valign-wrapper">
+                            <div class="row smallmargin">
+                                <a id="jbb-vtc-accept-btn-XXXX" class="btn-floating btn-small waves-effect waves-light green"><i class="jbb-vtc-accept material-icons" data-courseid="XXX">check</i></a>
+                                <div id="jbb-vtc-loader-XXXX" class="jbb-vtc-loader-item progress hide" style="width:30px;">
+                                    <div class="indeterminate"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!--JavaScript at end of body for optimized loading-->
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+        <script type="text/javascript" src="js/jbb-vtc-dashboard.js"></script>
+    </body>
+  
+</html>
