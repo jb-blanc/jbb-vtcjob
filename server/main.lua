@@ -46,14 +46,14 @@ local function dbManageHistory(citizenid, toAdd)
     return 5.0
 end
 
-local function dbCreatePlayer(player)
-    return MySQL.insert.await('INSERT INTO jbbvtc(citizenid, history) VALUES (?, ?)', {player.PlayerData.citizenid, '[]'})
+local function dbCreatePlayer(citizenid)
+    return MySQL.insert.await('INSERT INTO jbbvtc(citizenid, history) VALUES (?, ?)', {citizenid, '[]'})
 end
 
 local function dbRetrievePlayer(citizenid)
     local result = MySQL.single.await('SELECT * FROM jbbvtc WHERE citizenid = ? LIMIT 1', { citizenid })
     if result == nil then
-        dbCreatePlayer(player)
+        dbCreatePlayer(citizenid)
         result = MySQL.single.await('SELECT * FROM jbbvtc WHERE citizenid = ? LIMIT 1', { citizenid })
     end
 
