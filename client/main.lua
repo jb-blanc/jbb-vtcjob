@@ -447,6 +447,12 @@ local function startPickupListener()
             local dist = getV3ToV2Distance(GetEntityCoords(PlayerPedId()),currentCourse.start)
             local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
 
+            --Trying to fix elevation of marker
+            local z = currentCourse.start.z
+            if dist <= 200 then
+                z = getGroundZCoordsOrDefault(currentCourse.start, z)
+            end
+
             if dist <= 15.0 then
                 if getSpeed(vehicle) < 1 then
                     c = colorGreen
@@ -561,6 +567,13 @@ end
 
 RegisterNetEvent('QBCore:Client:UpdateObject', function()
     QBCore = exports['qb-core']:GetCoreObject()
+end)
+
+RegisterNetEvent("jbb:vtc:client:updateRate", function(course, newRate)
+    if not onDuty then return end
+    if not currentCourse then return end
+    myRate = newRate
+    VtcUiUpdateRate(myRate)
 end)
 
 RegisterNetEvent("jbb:vtc:client:newcourse", function(course)
@@ -688,9 +701,9 @@ RegisterNetEvent("jbb:vtc:client:driverarrived", function()
     VTCUiDriverArrived()
 end)
 
-RegisterNetEvent("jbb:vtc:client:clientdone", function()
+RegisterNetEvent("jbb:vtc:client:clientdone", function(infos)
     clearDestinationBlip()
-    VTCUiClientReset()
+    VtcUiAskRate(infos)
 end)
 
 RegisterNetEvent("jbb:vtc:client:clientcancelled", function()
@@ -707,11 +720,11 @@ end)
 AddEventHandler("onResourceStart", function(r)
 	if r == GetCurrentResourceName() then
         --loadPedsModelHashes() -- Activate on dev env to generate all peds model hashes
-		SetNuiFocus(false,false)
+		VTCUiSetFocus(false)
 	end
 end)
 AddEventHandler("onResourceStop", function(r)
 	if r == GetCurrentResourceName() then
-		SetNuiFocus(false,false)
+		VTCUiSetFocus(false)
 	end
 end)

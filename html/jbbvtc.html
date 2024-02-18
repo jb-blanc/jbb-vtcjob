@@ -43,8 +43,6 @@
                     </div>
                 </div>
             </div>
-            <div>
-            </div>
             <div id="jbb-vtc-dashboard-courses" class="hide">
                 
             </div>
@@ -124,6 +122,26 @@
                                 </label>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="jbb-vtc-rateride" class="hide">
+            <div class="col s12">
+                <h5 class="center-align">Rate the ride</h5>
+                <div class="row">
+                    <div class="col s12 center">
+                        <a href="#" class="rate-link" onclick="rating.rate(1)"><i id="rate-star-1" class="material-icons rate-stars small">star_border</i></a>
+                        <a href="#" class="rate-link" onclick="rating.rate(2)"><i id="rate-star-2" class="material-icons rate-stars small">star_border</i></a>
+                        <a href="#" class="rate-link" onclick="rating.rate(3)"><i id="rate-star-3" class="material-icons rate-stars small">star_border</i></a>
+                        <a href="#" class="rate-link" onclick="rating.rate(4)"><i id="rate-star-4" class="material-icons rate-stars small">star_border</i></a>
+                        <a href="#" class="rate-link" onclick="rating.rate(5)"><i id="rate-star-5" class="material-icons rate-stars small">star_border</i></a>
+                    </div>
+                </div>
+                <div>
+                    <div class="col s12">
+                        <a id="jbb-vtc-rate-validate" class="jbb-client-infos-bottom-btn btn waves-effect waves-light green" onclick="validateRate()">Send</a>
                     </div>
                 </div>
             </div>

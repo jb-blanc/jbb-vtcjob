@@ -26,13 +26,13 @@ end
 --SQL
 local dbCache = {}
 
-local function dbManageHistory(player, toAdd)
-    local history = json.decode(dbCache[player.PlayerData.citizenid].history)
+local function dbManageHistory(citizenid, toAdd)
+    local history = json.decode(dbCache[citizenid].history)
     if #history >= 20 then
         table.remove(history, 1)
     end
     history[#history+1] = toAdd
-    dbCache[player.PlayerData.citizenid].history = json.encode(history)
+    dbCache[citizenid].history = json.encode(history)
 
     if #history > 5 then
         local newRating = 0.0
@@ -50,8 +50,7 @@ local function dbCreatePlayer(player)
     return MySQL.insert.await('INSERT INTO jbbvtc(citizenid, history) VALUES (?, ?)', {player.PlayerData.citizenid, '[]'})
 end
 
-local function dbRetrievePlayer(player)
-    local citizenid = player.PlayerData.citizenid
+local function dbRetrievePlayer(citizenid)
     local result = MySQL.single.await('SELECT * FROM jbbvtc WHERE citizenid = ? LIMIT 1', { citizenid })
     if result == nil then
         dbCreatePlayer(player)
@@ -59,12 +58,19 @@ local function dbRetrievePlayer(player)
     end
 
     dbCache[citizenid] = result
+    return result
 end
 
-local function dbAddDoneCourse(player, earned, rate)
-    local newRate = dbManageHistory(player, {earned=earned, rate=rate})
+local function dbAddDoneCourse(citizenid, earned, rate)
+    local newRate = dbManageHistory(citizenid, {earned=earned, rate=rate})
 
-    local vtcInfos = dbCache[player.PlayerData.citizenid]
+    local vtcInfos = dbCache[citizenid]
+
+    if not vtcInfos then
+        vtcInfos = dbRetrievePlayer(citizenid)
+    end
+
+
     vtcInfos.total_course = vtcInfos.total_course+1
     vtcInfos.total_earning = vtcInfos.total_earning+earned
     vtcInfos.rate = newRate
@@ -74,9 +80,9 @@ local function dbAddDoneCourse(player, earned, rate)
         vtcInfos.total_earning,
         vtcInfos.rate,
         vtcInfos.history,
-        player.PlayerData.citizenid
+        citizenid
     }, function(affectedRows)
-        print("[SERVER] VTC "..player.PlayerData.citizenid.." updated")
+        print("[SERVER] VTC "..citizenid.." updated")
     end)
 
     return newRate
@@ -178,7 +184,7 @@ local function endPnjCourse(player, course, success, satisfaction)
     if success then
         local rate = tonumber(string.format("%.1f", satisfaction/20))
         
-        local newRate = dbAddDoneCourse(player, course.reward, rate)
+        local newRate = dbAddDoneCourse(player.PlayerData.citizenid, course.reward, rate)
 
         player.Functions.AddMoney("bank", course.reward, "VTC drive course done")
         TriggerClientEvent("jbb:vtc:client:jobdone", player.PlayerData.source, course.id, newRate)
@@ -198,7 +204,7 @@ local function endPlayerCourse(player, course, success)
         client.Functions.RemoveMoney("bank", course.price, "VTC drive course")
 
         TriggerClientEvent("jbb:vtc:client:jobdone", player.PlayerData.source, course.id, rate)
-        TriggerClientEvent("jbb:vtc:client:clientdone", course.player)
+        TriggerClientEvent("jbb:vtc:client:clientdone", course.player, {driver=player.PlayerData.citizenid, reward=course.reward})
 
         QBCore.Functions.Notify(player.PlayerData.source, "You've arrived at destination", "success", 3000)
         QBCore.Functions.Notify(course.player, "You've arrived at destination", "success", 3000)
@@ -264,7 +270,7 @@ local function goOnDuty(source)
         return false
     end
 
-    dbRetrievePlayer(player)
+    dbRetrievePlayer(player.PlayerData.citizenid)
     activeDriver[player.PlayerData.citizenid] = src
     QBCore.Functions.Notify(src, "You're on duty.", "success", 2000)
     TriggerClientEvent("jbb:vtc:client:onduty", src, dbCache[player.PlayerData.citizenid].rate)
@@ -368,6 +374,21 @@ QBCore.Functions.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb
         cb(true)
     end
     
+end)
+
+QBCore.Functions.CreateCallback('jbb:vtc:server:clientRated', function(source, cb, data)
+    local src = source
+    if not src then cb(false) return end
+    local player = checkAndGetPlayer(src)
+    if not player then cb(false) return end
+    
+    local newRate = dbAddDoneCourse(data.driver, data.reward, tonumber(data.rate))
+    local driver = activeDriver[data.driver]
+    if driver then
+        TriggerClientEvent("jbb:vtc:client:updateRate", driver, newRate)
+    end
+
+    cb(true)
 end)
 
 local running = true

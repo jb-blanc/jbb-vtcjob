@@ -114,3 +114,24 @@
 .blink {
     animation: blinking 1s infinite;
 }
+
+#jbb-vtc-rateride{
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    color:white;
+    width: 200px;
+    font-size:0.7em;
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    top: 50%;
+    margin-top: -100px;
+}
+
+.rate-stars:hover{
+    cursor: pointer;
+}
+
+.rate-link{
+    color:gold
+}

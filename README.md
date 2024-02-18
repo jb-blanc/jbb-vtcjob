@@ -8,7 +8,7 @@ Here are the main features :
    - Accept players request for a ride
  - As a UverX customer : 
    - Request a ride to a destination
-   - **TODO** : rate the driver after your ride
+   - Rate the driver after your ride
 
 ## Settings
 A large amount of settings are available for you to customize how much driver will earn and how much customer will pay.

@@ -1,5 +1,4 @@
 local displayed = false
-local hasFocus = false
 --UI FUNCTIONS
 
 function TransformCourse(source)
@@ -140,13 +139,6 @@ function VtcUiUpdateSatisfaction(satisfaction)
     })
 end
 
-function VtcUiUpdateDistances(courses)
-    SendNUIMessage({
-        type = "jbb:vtc:ui:updatedistances",
-        courses = courses
-    })
-end
-
 function VtcUiUpdateRate(rate)
     SendNUIMessage({
         type = "jbb:vtc:ui:updaterate",
@@ -168,7 +160,6 @@ function ToggleUiDisplay(override)
 end
 
 function VTCUiSetFocus(focus)
-    hasFocus = focus
     SetNuiFocus(focus, focus)
 end
 
@@ -177,6 +168,7 @@ function VTCUiDriverFound(data)
         type = "jbb:vtc:ui:driverfound",
         driver = data
     })
+    VTCUiSetFocus(false)
 end
 
 function VTCUiDriverHere()
@@ -238,6 +230,16 @@ function VtcUiHideClientInfos()
         infos = clientInfos
     })
 end
+
+function VtcUiAskRate(infos)
+    VtcUiShow(false)
+    SendNUIMessage({
+        type = "jbb:vtc:ui:askrate",
+        infos = infos
+    })
+    VTCUiSetFocus(true)
+end
+
 --NUI Callbacks 
 RegisterNUICallback('jbb:vtc:client:ui:accept', function(data, cb)
     -- POST data gets parsed as JSON automatically
@@ -305,5 +307,12 @@ end)
 RegisterNUICallback('jbb:vtc:client:ui:changedMode', function(data, cb)
     QBCore.Functions.TriggerCallback('jbb:vtc:server:changeDuty', function(success)
         cb({success=success})
+    end, data)
+end)
+
+RegisterNUICallback('jbb:vtc:client:ui:sendRate', function(data, cb)
+    QBCore.Functions.TriggerCallback('jbb:vtc:server:clientRated', function(success)
+        cb({success=success})
+        VTCUiClientReset()
     end, data)
 end)

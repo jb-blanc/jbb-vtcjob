@@ -19,10 +19,13 @@ const elClientInfos = document.getElementById('jbb-vtc-client-infos')
 const elClientMugshot = document.getElementById('jbb-vtc-client-mugshot')
 const elClientDetailsTxt = document.getElementById('jbb-client-details-txt')
 const elInputSwitchMode = document.getElementById('jbb-vtc-switchMode-input')
+const elRateRide = document.getElementById("jbb-vtc-rateride")
+const elRateValidate = document.getElementById("jbb-vtc-rate-validate")
 
 const driverStatus = {coming:"Your driver is on his way", here:"Your driver is here", inprogress:"Ride is in progress", finished:"You have arrived"}
 var askcourse = null
 var driverMode = false
+var isRating = false
 
 function sendEvent(event, data, cb){
     fetch(`https://${GetParentResourceName()}/${event}`, {
@@ -38,6 +41,46 @@ function sendEvent(event, data, cb){
             cb(json)
     });
 }
+
+class RatingComponent {
+    constructor() {
+        this.infos = null;
+        this.stars = [document.getElementById("rate-star-1"),document.getElementById("rate-star-2"),document.getElementById("rate-star-3"),document.getElementById("rate-star-4"),document.getElementById("rate-star-5")];
+        this.index = 0;
+    }
+
+    setInfos(infos) {
+        this.infos = infos
+    }
+
+    reset() {
+        this.infos=null;
+        this.index=0;
+        for(var i=0;i<5;i++){
+            this.stars[i].innerText = "star_border"
+        }
+    }
+
+    rate(v){
+        if(v != this.index+1){
+            for(var i=0;i<5;i++){
+                this.stars[i].innerText = v >= i+1 ? "star" : "star_border"
+            }
+            this.index = v-1
+        }
+        else{
+            this.stars[v-1].innerText = "star_border"
+            this.index = v-2
+        }
+    }
+
+    getValue(){
+        this.infos.rate = this.index+1
+        return this.infos
+    }
+}
+
+const rating = new RatingComponent();
 
 function show(show, element){
     if(show==false) element.classList.add("hide")
@@ -280,6 +323,26 @@ function hideClientInfos(){
     elClientInfos.classList.add("hide")
 }
 
+function showRating(infos){
+    isRating = true
+    rating.reset()
+    rating.setInfos(infos)
+    elRateValidate.classList.remove("disabled")
+    elRateRide.classList.remove("hide")
+}
+
+function hideRating(){
+    isRating = false
+    elRateValidate.classList.remove("disabled")
+    elRateRide.classList.add("hide")
+}
+
+function validateRate(){
+    isRating = false
+    elRateValidate.classList.add("disabled")
+    sendEvent("jbb:vtc:client:ui:sendRate", rating.getValue(), (success)=>{hideRating()})
+}
+
 document.addEventListener('click', function (event) {
 	if (!event.target.matches('.jbb-vtc-accept')) return;
 	event.preventDefault();
@@ -337,12 +400,13 @@ window.addEventListener('message', (event) => {
     else if (event.data.type === 'jbb:vtc:ui:clientreset') {
         resetAskForm()
     }
+    else if (event.data.type === 'jbb:vtc:ui:askrate') {
+        showRating(event.data.infos)
+    }
 });
 
 document.body.addEventListener('keydown', function (e) {
-    switch(e.keyCode) {
-        case 27: // ESCAPE
-            sendEvent("jbb:vtc:client:ui:releasefocus",{})
-            break;
+    if(e.key === 'Escape' && !isRating) {
+        sendEvent("jbb:vtc:client:ui:releasefocus",{})
     }
 });
