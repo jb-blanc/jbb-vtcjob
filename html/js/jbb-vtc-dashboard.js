@@ -241,6 +241,7 @@ function cancelCourse(){
 
 function switchToDriverMode(){
     driverMode = true
+    elCourses.innerText = ""
     show(true, elCourses)
     show(false, elAskDriver)
 }
