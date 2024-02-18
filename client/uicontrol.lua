@@ -139,6 +139,13 @@ function VtcUiUpdateSatisfaction(satisfaction)
     })
 end
 
+function VtcUiUpdateDistances(courses)
+    SendNUIMessage({
+        type = "jbb:vtc:ui:updatedistances",
+        courses = courses
+    })
+end
+
 function VtcUiUpdateRate(rate)
     SendNUIMessage({
         type = "jbb:vtc:ui:updaterate",
