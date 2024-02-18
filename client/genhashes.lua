@@ -5,7 +5,6 @@ local pedsNameLoaded = false
 local function loadPedsModelHashes()
     if pedsNameLoaded then return end
     CreateThread(function()
-        local pedsNames = {}
         local strHashes = ""
         for _,modelHash in ipairs(Config.VTC.generator.peds_model) do
             RequestModel(modelHash)
@@ -14,7 +13,6 @@ local function loadPedsModelHashes()
             end
             local e = CreatePed(1, modelHash, 0.0, 0.0, 0.0, 0.0, false, false)
             local entityModel = GetEntityModel(e)
-            pedsNames[entityModel] = modelHash
             DeleteEntity(e)
             -- when done using the model
             SetModelAsNoLongerNeeded(modelHash)
