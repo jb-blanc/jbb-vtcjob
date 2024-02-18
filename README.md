@@ -18,6 +18,7 @@ The key for opening/focusing the UI is **F5** by default but can be change in th
 
 ## Demonstration
 ### NPC Drive request
-`video: https://youtu.be/DkmiIAgDU5I`
+[![QBCore JBB-VTCJOB - NPC Drive demo](https://img.youtube.com/vi/DkmiIAgDU5I/0.jpg)](https://www.youtube.com/watch?v=DkmiIAgDU5I)
+
 ### Player Drive request
-`video: https://youtu.be/9rvrmue_hXU`
+[![QBCore JBB-VTCJOB - Player Drive demo](https://img.youtube.com/vi/9rvrmue_hXU/0.jpg)](https://www.youtube.com/watch?v=9rvrmue_hXU)
