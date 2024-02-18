@@ -2,7 +2,7 @@ fx_version 'cerulean'
 game 'gta5'
 
 description 'Special VTC service UverX for QB-Core'
-version '1.0.0'
+version '1.0.1'
 author 'JiBiBi'
 
 ui_page 'html/jbbvtc.html'
