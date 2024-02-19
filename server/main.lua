@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+Jbb = exports["jbb-vtcjob"]:getInstance()
 
 local LAST_ID = 0
 local activeDriver = {}
@@ -14,7 +14,7 @@ end
 
 local function checkAndGetPlayer(source)
     if source == '' then return nil end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = Jbb.GetPlayer(source)
     if not Player then return nil end
     return Player
 end
@@ -188,15 +188,15 @@ local function endPnjCourse(player, course, success, satisfaction)
 
         player.Functions.AddMoney("bank", course.reward, "VTC drive course done")
         TriggerClientEvent("jbb:vtc:client:jobdone", player.PlayerData.source, course.id, newRate)
-        QBCore.Functions.Notify(player.PlayerData.source, "You've arrived at destination", "success", 3000)
+        Jbb.Notify(player.PlayerData.source, "You've arrived at destination", "success", 3000)
     else
         TriggerClientEvent("jbb:vtc:client:jobcancelled", player.PlayerData.source, course.id)
-        QBCore.Functions.Notify(player.PlayerData.source, "You cancelled the course", "error", 3000)
+        Jbb.Notify(player.PlayerData.source, "You cancelled the course", "error", 3000)
     end
 end
 
 local function endPlayerCourse(player, course, success)
-    local client = QBCore.Functions.GetPlayer(course.player)
+    local client = Jbb.GetPlayer(course.player)
     if success then
         local rate = dbCache[player.PlayerData.citizenid].rate
         
@@ -206,14 +206,14 @@ local function endPlayerCourse(player, course, success)
         TriggerClientEvent("jbb:vtc:client:jobdone", player.PlayerData.source, course.id, rate)
         TriggerClientEvent("jbb:vtc:client:clientdone", course.player, {driver=player.PlayerData.citizenid, reward=course.reward})
 
-        QBCore.Functions.Notify(player.PlayerData.source, "You've arrived at destination", "success", 3000)
-        QBCore.Functions.Notify(course.player, "You've arrived at destination", "success", 3000)
+        Jbb.Notify(player.PlayerData.source, "You've arrived at destination", "success", 3000)
+        Jbb.Notify(course.player, "You've arrived at destination", "success", 3000)
     else
         TriggerClientEvent("jbb:vtc:client:jobcancelled", player.PlayerData.source, course.id)
-        QBCore.Functions.Notify(player.PlayerData.source, "The course is cancelled", "error", 3000)
+        Jbb.Notify(player.PlayerData.source, "The course is cancelled", "error", 3000)
 
         TriggerClientEvent("jbb:vtc:client:clientcancelled", course.player, course.id)
-        QBCore.Functions.Notify(course.player, "The driver cancelled the course", "error", 3000)
+        Jbb.Notify(course.player, "The driver cancelled the course", "error", 3000)
     end
 end
 
@@ -226,7 +226,7 @@ local function endCourse(src, player, cid, success, satisfaction)
             if course.player then endPlayerCourse(player, course, success)
             else endPnjCourse(player, course, success, satisfaction) end
         else
-            QBCore.Functions.Notify(src, "This course is not in progress", "error", 3000)
+            Jbb.Notify(src, "This course is not in progress", "error", 3000)
         end
     end
 end
@@ -236,12 +236,12 @@ local function canPlayerGoOnDuty(player)
     local wrongs = {}
     if Config.VTC.general.job_required then 
         if player.PlayerData.job.name ~= Config.VTC.general.job_required then
-            wrongs[#(wrongs)+1] = "the job "..QBCore.Shared.Jobs[Config.VTC.general.job_required].label
+            wrongs[#(wrongs)+1] = "the job "..Jbb.GetJobLabel(Config.VTC.general.job_required)
         end
     end
     if Config.VTC.general.item_required then 
-        if not QBCore.Functions.HasItem(player.PlayerData.source, Config.VTC.general.item_required, 1) then
-            wrongs[#(wrongs)+1] = "the item "..QBCore.Shared.Items[Config.VTC.general.item_required].label
+        if not Jbb.HasItem(player.PlayerData.source, Config.VTC.general.item_required, 1) then
+            wrongs[#(wrongs)+1] = "the item "..Jbb.GetItemLabel(Config.VTC.general.item_required)
         end
     end
     return (#wrongs == 0), wrongs
@@ -260,19 +260,19 @@ local function goOnDuty(source)
             strWrongs = strWrongs.."  "..wrong
         end
 
-        QBCore.Functions.Notify(src, "To go on duty you need "..strWrongs, "error", 5000)
+        Jbb.Notify(src, "To go on duty you need "..strWrongs, "error", 5000)
         return false
     end
 
     local vehicle = GetVehiclePedIsIn(GetPlayerPed(src), false)
     if not vehicle then
-        QBCore.Functions.Notify(src, "You must be in a vehicle to start UverX.", "error", 3000)
+        Jbb.Notify(src, "You must be in a vehicle to start UverX.", "error", 3000)
         return false
     end
 
     dbRetrievePlayer(player.PlayerData.citizenid)
     activeDriver[player.PlayerData.citizenid] = src
-    QBCore.Functions.Notify(src, "You're on duty.", "success", 2000)
+    Jbb.Notify(src, "You're on duty.", "success", 2000)
     TriggerClientEvent("jbb:vtc:client:onduty", src, dbCache[player.PlayerData.citizenid].rate)
     return true
 end
@@ -283,17 +283,12 @@ local function goOffDuty(source)
     if player and activeDriver[player.PlayerData.citizenid] then
         dbCache[player.PlayerData.citizenid] = nil
         activeDriver[player.PlayerData.citizenid] = nil
-        QBCore.Functions.Notify(src, "You're now off duty.", "success", 2000)
+        Jbb.Notify(src, "You're now off duty.", "success", 2000)
         TriggerClientEvent("jbb:vtc:client:offduty", src)
     end
 end
 
 -- EVENTS
-
-RegisterNetEvent('QBCore:Server:UpdateObject', function()
-	if source ~= '' then return false end
-	QBCore = exports['qb-core']:GetCoreObject()
-end)
 
 RegisterNetEvent('jbb:vtc:server:finished', function(courseId, satisfaction)
     local src = source
@@ -317,7 +312,7 @@ RegisterNetEvent('jbb:vtc:server:takecourse', function(courseId)
         if queuedCourse[cid] then
             assignCourse(src, player, cid)
         else
-            QBCore.Functions.Notify(src, "This course is not available", "error", 2000)
+            Jbb.Notify(src, "This course is not available", "error", 2000)
         end
     end
 end)
@@ -361,10 +356,11 @@ RegisterNetEvent('jbb:vtc:server:driveratdestination', function(courseId)
     TriggerClientEvent("jbb:vtc:client:driverarrived", inProgressCourse[cid].player)
 end)
 
-QBCore.Functions.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb, data)
+Jbb.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb, data)
     local src = source
     if not src then cb(false) return end
     local player = checkAndGetPlayer(src)
+    print("Player : "..json.encode(player))
     if not player then cb(false) return end
     if data.driverMode then
         local duty = goOnDuty(src)
@@ -376,7 +372,7 @@ QBCore.Functions.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb
     
 end)
 
-QBCore.Functions.CreateCallback('jbb:vtc:server:clientRated', function(source, cb, data)
+Jbb.CreateCallback('jbb:vtc:server:clientRated', function(source, cb, data)
     local src = source
     if not src then cb(false) return end
     local player = checkAndGetPlayer(src)

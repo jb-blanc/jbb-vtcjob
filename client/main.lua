@@ -1,4 +1,4 @@
-QBCore = exports['qb-core']:GetCoreObject()
+Jbb = exports["jbb-vtcjob"]:getInstance()
 
 local courses = {}
 local myRate = 0.0
@@ -24,7 +24,7 @@ function CanStartCourse(cid)
     local playerSeatCount = GetPlayerVehicleSeatCount()
     local coursePeds = courses[cid].pedscount
     if playerSeatCount >= coursePeds then return true end
-    QBCore.Functions.Notify("Not enough seats in your vehicle", "error", 5000)
+    Jbb.Notify("Not enough seats in your vehicle", "error", 5000)
     return false
 end
 
@@ -565,10 +565,6 @@ end
 
 -- EVENTS FOR UVERX DRIVER
 
-RegisterNetEvent('QBCore:Client:UpdateObject', function()
-    QBCore = exports['qb-core']:GetCoreObject()
-end)
-
 RegisterNetEvent("jbb:vtc:client:updateRate", function(course, newRate)
     if not onDuty then return end
     if not currentCourse then return end
@@ -660,7 +656,7 @@ RegisterKeyMapping('jbb-vtc', 'Open UverX', 'keyboard', 'F5')
 RegisterNetEvent("jbb:vtc:client:timeout", function()
     clearDestinationBlip()
     VtcUiClientTimeout()
-    QBCore.Functions.Notify("No driver were available", "error", 3000)
+    Jbb.Notify("No driver were available", "error", 3000)
 end)
 
 AddEventHandler("jbb:vtc:client:registerForDrive", function(data)
@@ -677,7 +673,7 @@ RegisterNetEvent("jbb:vtc:client:driverassigned", function(data)
     driver = data
     VTCUiDriverFound(driver)
     driverBlip = createBlips(data.coords, ("UverX - %s"):format(driver.name), 782, 69, 2, 0.9, false)
-    QBCore.Functions.Notify(("UverX : %s is on his way"):format(data.name), "success", 3000)
+    Jbb.Notify(("UverX : %s is on his way"):format(data.name), "success", 3000)
 end)
 
 RegisterNetEvent("jbb:vtc:client:updateDriverPosition", function(coords)
@@ -712,7 +708,7 @@ RegisterNetEvent("jbb:vtc:client:clientcancelled", function()
 end)
 
 RegisterNetEvent("jbb:vtc:client:notenoughmoney", function(price)
-    QBCore.Functions.Notify(("You need at least %s on your bank account"):format(tostring(price)), "error", 5000)
+    Jbb.Notify(("You need at least %s on your bank account"):format(tostring(price)), "error", 5000)
     clearDestinationBlip()
     VTCUiClientReset()
 end)

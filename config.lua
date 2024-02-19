@@ -1,11 +1,13 @@
 Config = Config or {}
 Config.UseTarget = GetConvar('UseTarget', 'false') == 'true' -- Use qb-target interactions (don't change this, go to your server.cfg and add `setr UseTarget true` to use this and just that from true to false or the other way around)
 
+Config.framework = 'ESX' -- ESX or QBCore
+
 Config.VTC = {
     general = {
         speed_unit = "MPH",                 --can be KPH or MPH (this will affect min/max speed constraint)
-        job_required = "uverx_driver",      --The needed job for being a VTC driver (nil means no job)
-        item_required = "uverx_license",    --The needed item for being a VTC driver (nil means no item)
+        job_required = nil,                 --The needed job for being a VTC driver (nil means no job)
+        item_required = nil,                --The needed item for being a VTC driver (nil means no item)
     },
     course = {
         availability_time_npc = 10000,      --Number of milliseconds after a NPC Course will be remove from list
