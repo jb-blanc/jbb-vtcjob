@@ -360,7 +360,6 @@ Jbb.CreateCallback('jbb:vtc:server:changeDuty', function(source, cb, data)
     local src = source
     if not src then cb(false) return end
     local player = checkAndGetPlayer(src)
-    print("Player : "..json.encode(player))
     if not player then cb(false) return end
     if data.driverMode then
         local duty = goOnDuty(src)
