@@ -20,22 +20,19 @@ shared_scripts {
 
 server_script {
     '@oxmysql/lib/MySQL.lua',
+    'server/bridge.lua',
     'server/main.lua',
     -- enable only if you need to generate hashes
     --'server/genhashes.lua',
 }
 
 client_scripts {
+    'client/bridge.lua',
     'client/peds_hashes.lua',
     'client/main.lua',
     'client/uicontrol.lua',
     -- enable only if you need to generate hashes
     --'client/genhashes.lua',
-}
-
-dependencies {
-    'qb-core',
-    'qb-banking'
 }
 
 lua54 'yes'
