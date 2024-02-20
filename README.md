@@ -1,6 +1,6 @@
 # JBB-VTCJOB
 
-This ressource made for QB-Core is a VTC app called UverX.
+This ressource made for [QB/ESX] is a VTC app called UverX.
 Here are the main features : 
 
  - As a UverX Driver : 
