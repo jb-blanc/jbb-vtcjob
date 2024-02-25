@@ -5,6 +5,7 @@ Config.framework = 'QBCore' -- ESX or QBCore
 
 Config.VTC = {
     general = {
+        npc_drives_enabled = true,          --Enable or disable the NPC drive generation 
         speed_unit = "MPH",                 --can be KPH or MPH (this will affect min/max speed constraint)
         job_required = nil,                 --The needed job for being a VTC driver (nil means no job)
         item_required = nil,                --The needed item for being a VTC driver (nil means no item)

@@ -389,17 +389,19 @@ end)
 local running = true
 -- THREADS
 --thread for creating new courses
-CreateThread(function()
-    while running do
-        local waitTime = math.random(Config.VTC.generator.min_wait_time,Config.VTC.generator.max_wait_time)
-        if tableCount(activeDriver) > 0 then
-            local course = generateNewCourse()
-            queuedCourse[course.id] = course
-            TriggerClientEvent("jbb:vtc:client:newcourse", -1, course)
+if Config.VTC.general.npc_drives_enabled then 
+    CreateThread(function()
+        while running do
+            local waitTime = math.random(Config.VTC.generator.min_wait_time,Config.VTC.generator.max_wait_time)
+            if tableCount(activeDriver) > 0 then
+                local course = generateNewCourse()
+                queuedCourse[course.id] = course
+                TriggerClientEvent("jbb:vtc:client:newcourse", -1, course)
+            end
+            Wait(waitTime)
         end
-        Wait(waitTime)
-    end
-end)
+    end)
+end
 
 --Checks for courses that are too old and disconnected player (todo)
 CreateThread(function()
